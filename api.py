@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# временное хранилище кодов (потом сделаем базу)
 valid_codes = set()
 
 @app.route("/add", methods=["POST"])
