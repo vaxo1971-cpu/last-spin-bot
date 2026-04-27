@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Last Spin</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+    }
+
+    #game {
+      display: none;
+    }
+
+    .wheel {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 10px solid #333;
+      margin: 20px auto;
+      background: conic-gradient(
+        red 0deg 180deg,
+        black 180deg 360deg
+      );
+      transition: transform 2s ease-out;
+    }
+
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 20px solid white;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎰 Last Spin</h1>
+
+<div id="auth">
+  <input id="code" placeholder="Enter LS code">
+  <button onclick="unlock()">Unlock Game</button>
+</div>
+
+<div id="game">
+  <div class="pointer"></div>
+  <div id="wheel" class="wheel"></div>
+
+  <p>Balance: <span id="balance">1000</span></p>
+  <input id="bet" type="number" placeholder="Bet">
+
+  <br><br>
+
+  <button onclick="spin('red')">Red</button>
+  <button onclick="spin('black')">Black</button>
+
+  <p id="result"></p>
+</div>
+
+<script>
+async function unlock() {
+  const code = document.getElementById("code").value;
+
+  const res = await fetch("https://last-spin-api.onrender.com/validate", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({code})
+  });
+
+  const data = await res.json();
+
+  if (data.ok) {
+    document.getElementById("auth").style.display = "none";
+    document.getElementById("game").style.display = "block";
+  } else {
+    alert("Invalid code");
+  }
+}
+
+let balance = 1000;
+
+function spin(color) {
+  const bet = parseInt(document.getElementById("bet").value);
+
+  if (!bet || bet > balance) return alert("Invalid bet");
+
+  const wheel = document.getElementById("wheel");
+  const random = Math.random();
+  const win = random > 0.5 ? "red" : "black";
+
+  const deg = Math.floor(Math.random() * 360) + 720;
+  wheel.style.transform = "rotate(" + deg + "deg)";
+
+  setTimeout(() => {
+    if (win === color) {
+      balance += bet;
+      document.getElementById("result").innerText = "You win!";
+    } else {
+      balance -= bet;
+      document.getElementById("result").innerText = "You lose!";
+    }
+
+    document.getElementById("balance").innerText = balance;
+  }, 2000);
+}
+</script>
+
+</body>
+</html>
