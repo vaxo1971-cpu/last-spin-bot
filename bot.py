@@ -54,12 +54,10 @@ def buy_access(message):
         stars = 50
         payload = "access_1h"
         title = "1 Hour Access"
-
     elif message.text == "⏱ 24 Hours — 150 Stars":
         stars = 150
         payload = "access_24h"
         title = "24 Hours Access"
-
     else:
         stars = 300
         payload = "access_7d"
@@ -92,15 +90,12 @@ def payment_success(message):
     if payload == "access_1h":
         duration = 3600
         access_name = "1 hour"
-
     elif payload == "access_24h":
         duration = 86400
         access_name = "24 hours"
-
     elif payload == "access_7d":
         duration = 604800
         access_name = "7 days"
-
     else:
         bot.send_message(user_id, "Payment received, but access type is unknown.")
         return
@@ -129,19 +124,11 @@ def my_access(message):
     data = users.get(user_id)
 
     if not data:
-        bot.send_message(
-            user_id,
-            "❌ You do not have active access.\n\n"
-            "Please buy access from the menu."
-        )
+        bot.send_message(user_id, "❌ You do not have active access.")
         return
 
     if time.time() > data["expires_at"]:
-        bot.send_message(
-            user_id,
-            "❌ Your access has expired.\n\n"
-            "Please buy access again."
-        )
+        bot.send_message(user_id, "❌ Your access has expired.")
         return
 
     minutes_left = int((data["expires_at"] - time.time()) / 60)
@@ -157,10 +144,7 @@ def my_access(message):
 
 @bot.message_handler(func=lambda message: True)
 def fallback(message):
-    bot.send_message(
-        message.chat.id,
-        "Please choose an option from the menu or type /start."
-    )
+    bot.send_message(message.chat.id, "Please choose an option from the menu or type /start.")
 
 
 bot.infinity_polling()
