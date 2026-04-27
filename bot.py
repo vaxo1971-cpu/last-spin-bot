@@ -9,9 +9,9 @@ TOKEN = "8250941489:AAG9wLq71wpbcwh3CTkS57DehPG8YIWdoZs"
 bot = telebot.TeleBot(TOKEN)
 
 def generate_code():
-    return "LS-" + ''.join(
-        random.choices(string.ascii_uppercase + string.digits, k=6)
-    )
+        return "LS-" + ''.join(
+            random.choices(string.ascii_uppercase + string.digits, k=6)
+        )
 
 @bot.message_handler(commands=['start'])
 def start(message):
