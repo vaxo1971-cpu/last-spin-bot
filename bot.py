@@ -1,11 +1,16 @@
-import telebot
+import os
 import random
 import string
+import telebot
+from flask import Flask, request
 
-TOKEN = "8250941489:AAEYE7VT3F4MAPY52d2xR1F8QmLRbmxOw7o"
-bot = telebot.TeleBot(TOKEN)
+TOKEN = "ВСТАВЬ_СЮДА_СВОЙ_ТОКЕН"
+WEBHOOK_URL = "https://last-spin-bot.onrender.com"
 
 GAME_URL = "https://shiny-axolotl-474a61.netlify.app"
+
+bot = telebot.TeleBot(TOKEN)
+app = Flask(__name__)
 
 
 def generate_code():
@@ -37,5 +42,21 @@ def play(message):
     )
 
 
+@app.route("/", methods=["GET"])
+def home():
+    return "Bot is running"
+
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
+    bot.process_new_updates([update])
+    return "OK", 200
+
+
 bot.remove_webhook()
-bot.infinity_polling(skip_pending=True)
+bot.set_webhook(url=f"{WEBHOOK_URL}/webhook")
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
