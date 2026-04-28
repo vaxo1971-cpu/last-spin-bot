@@ -1,56 +1,37 @@
-import os
 import telebot
-from telebot import types
-from flask import Flask, request
+import random
+import string
 
-TOKEN = os.getenv("BOT_TOKEN")
-
-if not TOKEN:
-    raise Exception("BOT_TOKEN is not set")
+TOKEN = "8250941489:AAEYE7VT3F4MAPY52d2xR1F8QmLRbmxOw7o"
 
 bot = telebot.TeleBot(TOKEN)
-app = Flask(__name__)
 
-GAME_URL = "https://shiny-axolotl-474a61.netlify.app/"
+GAME_URL = "https://shiny-axolotl-474a61.netlify.app"
 
-
-@bot.message_handler(commands=["start"])
-def start(message):
-    keyboard = types.InlineKeyboardMarkup()
-
-    button = types.InlineKeyboardButton(
-        text="🎰 Open Ancient Roulette",
-        web_app=types.WebAppInfo(url=GAME_URL)
+def generate_code():
+    return "LS-" + ''.join(
+        random.choices(string.ascii_uppercase + string.digits, k=6)
     )
 
-    keyboard.add(button)
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add("Play — 50 Stars")
 
     bot.send_message(
         message.chat.id,
-        "🎰 Welcome to Last Spin — Ancient Roulette\n\n"
-        "Training simulator only:\n"
-        "• No real money gambling\n"
-        "• No cash prizes\n"
-        "• No withdrawals\n"
-        "• Virtual balance only\n\n"
-        "Press the button below to open the game.",
-        reply_markup=keyboard
+        "🎰 Welcome to Last Spin\nPress Play",
+        reply_markup=markup
     )
 
+@bot.message_handler(func=lambda message: message.text == "Play — 50 Stars")
+def play(message):
+    code = generate_code()
+    url = f"{GAME_URL}/?code={code}"
 
-@app.route("/", methods=["GET"])
-def home():
-    return "Bot is running"
+    bot.send_message(
+        message.chat.id,
+        f"🎟 Code:\n{code}\n\n👉 {url}"
+    )
 
-
-@app.route("/webhook", methods=["POST"])
-def webhook():
-    json_str = request.get_data().decode("UTF-8")
-    update = telebot.types.Update.de_json(json_str)
-    bot.process_new_updates([update])
-    return "OK", 200
-
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+bot.infinity_polling()
