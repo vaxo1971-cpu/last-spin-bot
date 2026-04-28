@@ -4,7 +4,7 @@ import string
 import telebot
 from flask import Flask, request
 
-TOKEN = "ВСТАВЬ_СЮДА_СВОЙ_ТОКЕН"
+TOKEN = "8250941489:AAEYE7VT3F4MAPY52d2xR1F8QmLRbmxOw7o"
 WEBHOOK_URL = "https://last-spin-bot.onrender.com"
 
 GAME_URL = "https://shiny-axolotl-474a61.netlify.app"
@@ -49,13 +49,15 @@ def home():
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
+    json_str = request.get_data().decode("UTF-8")
+    update = telebot.types.Update.de_json(json_str)
     bot.process_new_updates([update])
     return "OK", 200
 
 
 bot.remove_webhook()
 bot.set_webhook(url=f"{WEBHOOK_URL}/webhook")
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
