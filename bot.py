@@ -4,7 +4,7 @@ import string
 import telebot
 from flask import Flask, request
 
-TOKEN = "8250941489:AAEYE7VT3F4MAPY52d2xR1F8QmLRbmxOw7o"
+TOKEN = "8250941489:AAEUlIUmBVMF2yr6uq-b9qmrpmnmLw0gUcg"
 WEBHOOK_URL = "https://last-spin-bot.onrender.com"
 
 GAME_URL = "https://shiny-axolotl-474a61.netlify.app"
