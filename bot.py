@@ -8,8 +8,12 @@ API_URL = "https://last-spin-api.onrender.com"
 
 bot = telebot.TeleBot(TOKEN)
 
+
 def generate_code():
-    return "LS-" + "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    return "LS-" + "".join(
+        random.choices(string.ascii_uppercase + string.digits, k=6)
+    )
+
 
 @bot.message_handler(commands=["start"])
 def start(message):
@@ -30,6 +34,7 @@ def start(message):
         reply_markup=markup
     )
 
+
 @bot.message_handler(func=lambda m: m.text == "Play — 50 Stars")
 def play(message):
     code = generate_code()
@@ -49,5 +54,6 @@ def play(message):
         "Open the game and enter this code:\n"
         "https://radiant-khapse-1ccf0a.netlify.app/"
     )
+
 
 bot.infinity_polling()
