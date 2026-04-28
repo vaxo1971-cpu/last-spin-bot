@@ -34,4 +34,6 @@ def play(message):
         f"🎟 Code:\n{code}\n\n👉 {url}"
     )
 
+bot.remove_webhook()
+bot.skip_pending = True
 bot.infinity_polling()
