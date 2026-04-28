@@ -18,7 +18,10 @@ def generate_code():
 @bot.message_handler(commands=["start"])
 def start(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add("Play — 50 Stars")
+
+    web_app = telebot.types.WebAppInfo("https://shiny-axolotl-474a61.netlify.app/")
+    btn = telebot.types.KeyboardButton("🎰 Play Roulette", web_app=web_app)
+    markup.add(btn)
 
     bot.send_message(
         message.chat.id,
@@ -34,8 +37,7 @@ def start(message):
         reply_markup=markup
     )
 
-
-@bot.message_handler(func=lambda m: m.text == "Play — 50 Stars")
+@bot.message_handler(func=lambda m: m.text == "🎰 Play Roulette")
 def play(message):
     code = generate_code()
 
@@ -52,7 +54,7 @@ def play(message):
         message.chat.id,
         f"✅ Your access code:\n\n{code}\n\n"
         "Open the game and enter this code:\n"
-        "https://radiant-khapse-1ccf0a.netlify.app/"
+        "https://shiny-axolotl-474a61.netlify.app/"
     )
 
 
